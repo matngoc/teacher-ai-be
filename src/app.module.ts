@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { CoreModule } from './core/core.module';
 import { UserContextMiddleware } from './core/middleware/user-context.middleware';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { MinioModule } from './minio/minio.module';
 
 @Module({
   imports: [
@@ -17,11 +18,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: '103.18.6.216',
+      host: 'localhost',
       port: 3306,
-      username: 'oe3bjpz9w7nl_teacherai',
-      password: ')!*L3lDeazI2P@)%',
-      database: 'oe3bjpz9w7nl_teacherai',
+      username: 'root',
+      password: '11112001',
+      database: 'teacher-ai',
       entities: [],
       synchronize: true,
       autoLoadEntities: true,
@@ -30,6 +31,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     RolesModule,
     AuthModule,
     CoreModule,
+    MinioModule,
   ],
   controllers: [AppController],
   providers: [AppService],

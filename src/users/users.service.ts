@@ -37,7 +37,7 @@ export class UsersService {
         userId: req.userId || null,
       },
       {
-        relations: ['role'],
+        relations: [],
       },
     );
   }
