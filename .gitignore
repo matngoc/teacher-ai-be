@@ -54,3 +54,18 @@ pids
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Deployment files
+.env.production
+backup_*.sql
+/uploads/*
+!uploads/.gitkeep
+
+# Docker
+docker-compose.override.yml
+
+# Archives
+*.zip
+*.tar
+*.tar.gz
+
