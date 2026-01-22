@@ -61,6 +61,7 @@ services:
     environment:
       NODE_ENV: ${NODE_ENV:-production}
       PORT: ${PORT:-8080}
+      API_URL: ${API_URL:-http://localhost:8080}
       DB_HOST: mysql
       DB_PORT: 3306
       DB_USERNAME: ${MYSQL_USER:-teacher-ai-user}
@@ -72,6 +73,7 @@ services:
       MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD:-minioadmin123}
       MINIO_BUCKET: ${MINIO_BUCKET:-uploads}
       MINIO_USE_SSL: ${MINIO_USE_SSL:-false}
+      MINIO_ENDPOINT_URL: ${MINIO_ENDPOINT_URL:-minio:9001}
       JWT_SECRET: ${JWT_SECRET:-eleven}
       JWT_EXPIRES: ${JWT_EXPIRES:-11d}
     ports:

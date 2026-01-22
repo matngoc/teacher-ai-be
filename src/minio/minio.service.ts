@@ -44,6 +44,18 @@ export class MinioService implements OnModuleInit {
   }
 
   getFileUrl(objectName: string) {
-    return `http://localhost:9001/${this.bucketName}/${objectName}`;
+    const apiUrl = this.configService.get('API_URL') || 'http://localhost:8080';
+    return `${apiUrl}/minio/file/${objectName}`;
+  }
+
+  async getFile(objectName: string): Promise<{
+    stream: NodeJS.ReadableStream;
+    metadata: any;
+  }> {
+    const stream = await this.minioClient.getObject(
+      this.bucketName,
+      objectName,
+    );
+    return { stream, metadata: {} };
   }
 }
