@@ -25,7 +25,7 @@ import { MinioModule } from './minio/minio.module';
         host: configService.get('DB_HOST', 'localhost'),
         port: parseInt(configService.get('DB_PORT', '3306')),
         username: configService.get('DB_USERNAME', 'root'),
-        password: configService.get('DB_PASSWORD', 'root'),
+        password: configService.get('DB_PASSWORD', '11112001'),
         database: configService.get('DB_NAME', 'teacher-ai'),
         entities: [],
         synchronize: configService.get('NODE_ENV') !== 'production',

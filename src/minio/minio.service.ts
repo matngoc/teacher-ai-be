@@ -44,7 +44,8 @@ export class MinioService implements OnModuleInit {
   }
 
   getFileUrl(objectName: string) {
-    const apiUrl = this.configService.get('API_URL') || 'http://localhost:8080';
+    const apiUrl =
+      this.configService.get('API_URL') || 'http://localhost:8080/api';
     return `${apiUrl}/minio/file/${objectName}`;
   }
 

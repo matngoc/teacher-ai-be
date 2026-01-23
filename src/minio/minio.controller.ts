@@ -7,15 +7,18 @@ import {
   Param,
   Res,
   BadRequestException,
+  Logger,
+  Req,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { Public } from '../auth/decorators/public.decorator';
 import { MinioService } from './minio.service';
 
 @Controller('minio')
 @Public()
 export class MinioController {
+  protected readonly logger = new Logger(MinioController.name);
   constructor(private readonly minioService: MinioService) {}
 
   @Post('/upload')
@@ -32,19 +35,29 @@ export class MinioController {
   @Get('/file/:folder/*')
   async getFile(
     @Param('folder') folder: string,
-    @Param() params: any,
+    @Req() request: Request,
     @Res() res: Response,
   ) {
     try {
-      const filePath = `${folder}/${params[0]}`;
-      const { stream } = await this.minioService.getFile(filePath);
+      // Extract the remaining path after /minio/file/:folder/
+      const baseUrl = `/minio/file/${folder}/`;
+      const fullPath = request.url;
+      const filePath = fullPath.substring(
+        fullPath.indexOf(baseUrl) + baseUrl.length,
+      );
+
+      this.logger.log(`Fetching file from path: ${folder}/${filePath}`);
+      const { stream } = await this.minioService.getFile(
+        `${folder}/${filePath}`,
+      );
 
       // Set proper headers for file download
       res.setHeader('Content-Type', 'application/octet-stream');
-      res.setHeader('Content-Disposition', `inline; filename="${params[0]}"`);
+      res.setHeader('Content-Disposition', `inline; filename="${filePath}"`);
 
       stream.pipe(res);
     } catch (error) {
+      this.logger.error(`Error fetching file: ${error.message}`);
       throw new BadRequestException('File not found');
     }
   }
