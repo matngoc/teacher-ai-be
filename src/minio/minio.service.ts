@@ -5,17 +5,24 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class MinioService implements OnModuleInit {
   private minioClient: Client;
-  private bucketName: string;
+  private readonly bucketName: string;
 
   constructor(private configService: ConfigService) {
-    this.bucketName = this.configService.get('MINIO_BUCKET') ?? '';
+    this.bucketName = this.configService.get('MINIO_BUCKET') ?? 'uploads';
+
+    // Parse endpoint and port from MINIO_ENDPOINT_URL (format: host:port)
+    const endpointUrl =
+      this.configService.get('MINIO_ENDPOINT_URL') ?? 'minio:9001';
+    const [endpoint, portStr] = endpointUrl.split(':');
+    const port = portStr ? +portStr : 9001;
 
     this.minioClient = new Client({
-      endPoint: this.configService.get('MINIO_ENDPOINT') ?? '',
-      port: +this.configService.get('MINIO_PORT'),
+      endPoint: endpoint,
+      port: port,
       useSSL: this.configService.get('MINIO_USE_SSL') === 'true',
-      accessKey: this.configService.get('MINIO_ACCESS_KEY'),
-      secretKey: this.configService.get('MINIO_SECRET_KEY'),
+      accessKey: this.configService.get('MINIO_ROOT_USER') ?? 'minioadmin',
+      secretKey:
+        this.configService.get('MINIO_ROOT_PASSWORD') ?? 'minioadmin123',
     });
   }
 

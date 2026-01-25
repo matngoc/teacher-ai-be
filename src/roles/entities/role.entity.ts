@@ -1,4 +1,4 @@
-import { AuditEntity } from '../../core/schema/audit.entity';
+import { AuditEntity } from '../../core/entities/audit.entity';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()

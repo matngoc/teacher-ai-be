@@ -17,7 +17,7 @@ export class RolesService {
     });
   }
 
-  async findAll(request: PageRequestDto, req: any): Promise<RoleEntity[]> {
+  async findAll(request: PageRequestDto, req: any) {
     const resPerPage = request.size || 10;
     const currentPage = Number(request.page) || 1;
     const skip = resPerPage * (currentPage - 1);

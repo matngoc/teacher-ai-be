@@ -67,13 +67,11 @@ services:
       DB_USERNAME: ${MYSQL_USER:-teacher-ai-user}
       DB_PASSWORD: ${MYSQL_PASSWORD:-teacher-ai-pass}
       DB_NAME: ${MYSQL_DATABASE:-teacher-ai}
-      MINIO_ENDPOINT: minio
-      MINIO_PORT: 9000
-      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER:-minioadmin}
-      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD:-minioadmin123}
       MINIO_BUCKET: ${MINIO_BUCKET:-uploads}
       MINIO_USE_SSL: ${MINIO_USE_SSL:-false}
-      MINIO_ENDPOINT_URL: ${MINIO_ENDPOINT_URL:-minio:9001}
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin123}
+      MINIO_ENDPOINT_URL: ${MINIO_ENDPOINT_URL:-minio:9000}
       JWT_SECRET: ${JWT_SECRET:-eleven}
       JWT_EXPIRES: ${JWT_EXPIRES:-11d}
     ports:

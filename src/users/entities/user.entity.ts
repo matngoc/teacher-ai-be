@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { AuditEntity } from '../../core/schema/audit.entity';
+import { AuditEntity } from '../../core/entities/audit.entity';
 
 @Entity()
 export class UserEntity extends AuditEntity {
@@ -32,4 +32,12 @@ export class UserEntity extends AuditEntity {
 
   @Column()
   roleId: number;
+
+  @Column({
+    name: 'refreshToken',
+    type: 'varchar',
+    length: 255,
+    nullable: true,
+  })
+  refreshToken?: string;
 }

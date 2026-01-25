@@ -16,7 +16,7 @@ export class UsersService {
     });
   }
 
-  async findAll(request: PageRequestDto, req: any): Promise<UserEntity[]> {
+  async findAll(request: PageRequestDto, req: any) {
     const resPerPage = request.size || 10;
     const currentPage = Number(request.page) || 1;
     const skip = resPerPage * (currentPage - 1);
@@ -28,7 +28,6 @@ export class UsersService {
         email: Like(`%${keyword}%`),
       }),
     };
-
     return this.userRepo.findAll(
       filter,
       resPerPage,
@@ -58,6 +57,9 @@ export class UsersService {
     return this.userRepo.updateOne(id, updateUserDto, {
       userId: req.userId || null,
     });
+  }
+  async updateRefreshToken(userId: string, refreshToken: string) {
+    return this.userRepo.updateOne(userId, { refreshToken } as any);
   }
 
   async remove(id: number, req: any) {

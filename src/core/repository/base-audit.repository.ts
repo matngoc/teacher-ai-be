@@ -1,6 +1,6 @@
 import { Repository, FindOptionsWhere } from 'typeorm';
 import { Logger } from '@nestjs/common';
-import { AuditEntity } from '../schema/audit.entity';
+import { AuditEntity } from '../entities/audit.entity';
 
 export class BaseAuditRepository<T extends AuditEntity> {
   protected readonly logger = new Logger(BaseAuditRepository.name);
@@ -68,7 +68,7 @@ export class BaseAuditRepository<T extends AuditEntity> {
     findOptions?: {
       relations?: string[];
     },
-  ): Promise<T[]> {
+  ): Promise<{ items: T[]; total: number }> {
     const userId = this.getUserId(options);
 
     const where: FindOptionsWhere<T> = {
@@ -80,11 +80,13 @@ export class BaseAuditRepository<T extends AuditEntity> {
       (where as any).creatorId = userId;
     }
 
-    return this.repository.find({
+    const [items, total] = await this.repository.findAndCount({
       where,
       take: resPerPage,
       skip,
       relations: findOptions?.relations,
     });
+
+    return { items, total };
   }
 }

@@ -14,6 +14,7 @@ import { LoginDto } from './dto/login.dto';
 import { Public } from './decorators/public.decorator';
 import { AuthGuard } from './auth.guard';
 import { RegisterDto } from './dto/register.dto';
+import { RefreshTokenDto } from './dto/refreshToken.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -24,6 +25,13 @@ export class AuthController {
   @Post('login')
   signIn(@Body() loginDto: LoginDto) {
     return this.authService.signIn(loginDto);
+  }
+
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @Post('refresh-token')
+  refreshToken(@Body() input: RefreshTokenDto) {
+    return this.authService.refreshToken(input.refreshToken);
   }
 
   @Public()

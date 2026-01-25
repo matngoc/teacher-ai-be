@@ -22,8 +22,8 @@ async function bootstrap() {
     prefix: '/uploads/',
   });
   const config = new DocumentBuilder()
-    .setTitle('We vote')
-    .setDescription('TeacherAI API documentation')
+    .setTitle('HanaTalk API')
+    .setDescription('HanaTalk API documentation')
     .setVersion('1.0')
     .addBearerAuth(
       {
@@ -36,7 +36,7 @@ async function bootstrap() {
       },
       'JWT-auth', // This is a security scheme name, used in @ApiSecurity()
     )
-    .addTag('WeVote 1.0')
+    .addTag('HanaTalk 1.0')
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);
