@@ -8,7 +8,7 @@ export class RoleEntity extends AuditEntity {
 
   @Column({
     name: 'name',
-    type: 'varchar',
+    type: 'nvarchar',
     length: 255,
     nullable: true,
   })
@@ -16,8 +16,8 @@ export class RoleEntity extends AuditEntity {
 
   @Column({
     name: 'description',
-    type: 'varchar',
-    length: 255,
+    type: 'nvarchar',
+    length: 500,
     nullable: true,
   })
   description: string;

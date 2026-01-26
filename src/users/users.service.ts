@@ -32,9 +32,7 @@ export class UsersService {
       filter,
       resPerPage,
       skip,
-      {
-        userId: req.userId || null,
-      },
+      {},
       {
         relations: [],
       },

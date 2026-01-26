@@ -93,13 +93,16 @@ export class AuthService {
     const checkUser = await this.usersService.findByEmail(input.email);
 
     if (checkUser == null) {
-      const role = await this.roleService.findByRoleName(
-        CoreConstant.ADMIN_ROLE,
-      );
       const userDto = new CreateUserDto();
       userDto.email = input.email;
-      userDto.roleId = role.id;
       userDto.password = input.password;
+      userDto.fullName = input.fullName;
+      userDto.age = input.age;
+      userDto.job = input.job;
+      userDto.motivation = input.motivation;
+      userDto.englishLevel = input.englishLevel;
+      userDto.favouriteTopic = input.favouriteTopic;
+      userDto.roleId = 0;
 
       return await this.usersService.create(userDto, req);
     } else {
