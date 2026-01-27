@@ -28,7 +28,7 @@ import { MinioModule } from './minio/minio.module';
         password: configService.get('DB_PASSWORD', '11112001'),
         database: configService.get('DB_NAME', 'teacher-ai'),
         entities: [],
-        synchronize: configService.get('NODE_ENV') !== 'production',
+        synchronize: true,
         autoLoadEntities: true,
         logging: configService.get('NODE_ENV') !== 'production',
       }),
