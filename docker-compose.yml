@@ -74,6 +74,8 @@ services:
       MINIO_ENDPOINT_URL: ${MINIO_ENDPOINT_URL:-minio:9000}
       JWT_SECRET: ${JWT_SECRET:-eleven}
       JWT_EXPIRES: ${JWT_EXPIRES:-11d}
+      DB_SYNCHRONIZE: ${DB_SYNCHRONIZE:-true}
+      DB_RUN_MIGRATIONS: ${DB_RUN_MIGRATIONS:-true}
     ports:
       - "${API_PORT:-8080}:8080"
     volumes:
