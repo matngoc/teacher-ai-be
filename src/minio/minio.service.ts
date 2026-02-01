@@ -1,6 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Client } from 'minio';
 import { ConfigService } from '@nestjs/config';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class MinioService implements OnModuleInit {
@@ -12,9 +13,9 @@ export class MinioService implements OnModuleInit {
 
     // Parse endpoint and port from MINIO_ENDPOINT_URL (format: host:port)
     const endpointUrl =
-      this.configService.get('MINIO_ENDPOINT_URL') ?? 'minio:9001';
+      this.configService.get('MINIO_ENDPOINT_URL') ?? 'minio:9000';
     const [endpoint, portStr] = endpointUrl.split(':');
-    const port = portStr ? +portStr : 9001;
+    const port = portStr ? +portStr : 9000;
 
     this.minioClient = new Client({
       endPoint: endpoint,
@@ -27,17 +28,18 @@ export class MinioService implements OnModuleInit {
   }
 
   async onModuleInit() {
-    const exists = await this.minioClient.bucketExists(this.bucketName);
-    if (!exists) {
-      await this.minioClient.makeBucket(this.bucketName, 'us-east-1');
-    }
+    // const exists = await this.minioClient.bucketExists(this.bucketName);
+    // if (!exists) {
+    //   await this.minioClient.makeBucket(this.bucketName, 'us-east-1');
+    // }
   }
 
   async uploadFile(
     file: Express.Multer.File,
     folder = 'default',
   ): Promise<string> {
-    const fileName = `${folder}/${Date.now()}-${file.originalname}`;
+    const fileExtension = file.originalname.split('.').pop();
+    const fileName = `${folder}/${uuidv4()}.${fileExtension}`;
 
     await this.minioClient.putObject(
       this.bucketName,
