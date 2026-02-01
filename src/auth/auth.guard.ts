@@ -3,7 +3,8 @@ import {
   ExecutionContext,
   Injectable,
   UnauthorizedException,
-  ForbiddenException, Logger,
+  ForbiddenException,
+  Logger,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Reflector } from '@nestjs/core';
@@ -40,14 +41,14 @@ export class AuthGuard implements CanActivate {
       });
       request['user'] = payload;
 
-      const requiredRoles = this.reflector.getAllAndOverride<string[]>(ROLES_KEY, [
-          context.getHandler(),
-          context.getClass(),
-        ]);
+      const requiredRoles = this.reflector.getAllAndOverride<string[]>(
+        ROLES_KEY,
+        [context.getHandler(), context.getClass()],
+      );
 
       if (requiredRoles && requiredRoles.length > 0) {
         const listRoles = [];
-        listRoles.push(payload.role as never)
+        listRoles.push(payload.role as never);
         const userRoles: string[] = listRoles || [];
         const hasPermission = requiredRoles.some((role) =>
           userRoles.includes(role),

@@ -7,6 +7,6 @@ import { MinioController } from './minio.controller';
   imports: [ConfigModule],
   providers: [MinioService],
   exports: [MinioService],
-  controllers: [MinioController]
+  controllers: [MinioController],
 })
 export class MinioModule {}

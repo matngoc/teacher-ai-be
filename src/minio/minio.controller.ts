@@ -22,8 +22,18 @@ export class MinioController {
   constructor(private readonly minioService: MinioService) {}
 
   @Post('/upload')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(
+    FileInterceptor('file', {
+      limits: {
+        fileSize: 100 * 1024 * 1024, // 100MB in bytes
+      },
+    }),
+  )
   async upload(@UploadedFile() file: Express.Multer.File) {
+    if (!file) {
+      throw new BadRequestException('No file uploaded');
+    }
+
     const path = await this.minioService.uploadFile(file, 'images');
 
     return {
