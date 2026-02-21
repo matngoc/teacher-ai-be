@@ -29,7 +29,7 @@ export class AuthService {
 
   async signIn(input: LoginDto): Promise<LoginResponseDto> {
     const user = await this.usersService.findByEmail(input.email);
-    if (user != null && input.password == input.password) {
+    if (user != null && input.password == user.password) {
       const role = await this.roleService.findOne(user.roleId);
       const payload = {
         userId: user.id,
