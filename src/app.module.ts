@@ -23,7 +23,7 @@ import { MinioModule } from './minio/minio.module';
       useFactory: (configService: ConfigService) => ({
         type: 'mysql',
         host: configService.get('MYSQL_HOST', 'localhost'),
-        port: parseInt(configService.get('MYSQL_POST', '3306')),
+        port: parseInt(configService.get('MYSQL_PORT', '3306')),
         username: configService.get('MYSQL_USER'),
         password: configService.get('MYSQL_PASSWORD'),
         database: configService.get('MYSQL_DATABASE'),

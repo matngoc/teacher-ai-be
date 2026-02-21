@@ -62,11 +62,11 @@ services:
       NODE_ENV: ${NODE_ENV:-production}
       PORT: ${PORT:-8080}
       API_URL: ${API_URL:-http://localhost:8080}
-      DB_HOST: mysql
-      DB_PORT: 3306
-      DB_USERNAME: ${MYSQL_USER:-teacher-ai-user}
-      DB_PASSWORD: ${MYSQL_PASSWORD:-teacher-ai-pass}
-      DB_NAME: ${MYSQL_DATABASE:-teacher-ai}
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_USERNAME: ${MYSQL_USER:-teacher-ai-user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-teacher-ai-pass}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-teacher-ai}
       MINIO_BUCKET: ${MINIO_BUCKET:-uploads}
       MINIO_USE_SSL: ${MINIO_USE_SSL:-false}
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
