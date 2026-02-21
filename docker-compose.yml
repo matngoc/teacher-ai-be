@@ -64,7 +64,7 @@ services:
       API_URL: ${API_URL:-http://localhost:8080}
       MYSQL_HOST: mysql
       MYSQL_PORT: 3306
-      MYSQL_USERNAME: ${MYSQL_USER:-teacher-ai-user}
+      MYSQL_USERNAME: ${MYSQL_USERNAME:-teacher-ai-user}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-teacher-ai-pass}
       MYSQL_DATABASE: ${MYSQL_DATABASE:-teacher-ai}
       MINIO_BUCKET: ${MINIO_BUCKET:-uploads}

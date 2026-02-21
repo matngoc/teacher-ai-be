@@ -13,8 +13,7 @@ import { MinioModule } from './minio/minio.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath:
-        process.env.NODE_ENV === 'production' ? '.env.production' : '.env',
+      envFilePath: '.env',
       isGlobal: true,
     }),
     TypeOrmModule.forRootAsync({
@@ -24,13 +23,13 @@ import { MinioModule } from './minio/minio.module';
         type: 'mysql',
         host: configService.get('MYSQL_HOST', 'localhost'),
         port: parseInt(configService.get('MYSQL_PORT', '3306')),
-        username: configService.get('MYSQL_USER'),
+        username: configService.get('MYSQL_USERNAME'),
         password: configService.get('MYSQL_PASSWORD'),
         database: configService.get('MYSQL_DATABASE'),
         entities: [],
         synchronize: true,
         autoLoadEntities: true,
-        logging: configService.get('NODE_ENV') !== 'production',
+        logging: true,
       }),
     }),
     UsersModule,
