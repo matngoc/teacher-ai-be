@@ -50,7 +50,7 @@ import { FileUpload } from './entities/file-upload.entity';
           Lesson,
           LessonHistory,
         ],
-        synchronize: cfg.get('NODE_ENV') !== 'production',
+        synchronize: true,
         autoLoadEntities: true,
         logging: cfg.get('NODE_ENV') === 'development',
         timezone: '+07:00',
