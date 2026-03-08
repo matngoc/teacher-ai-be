@@ -7,6 +7,7 @@ import {
   MaxLength,
   IsNotEmpty,
   Matches,
+  IsNumber,
 } from 'class-validator';
 import { CourseLevel } from '../../../entities/course.entity';
 
@@ -137,4 +138,13 @@ export class CourseFilterDto {
   })
   @IsOptional()
   size?: number;
+
+  @ApiProperty({
+    description:
+      'ID người dùng để lấy trạng thái học (progressPercent, learningStatus) của từng bài học',
+    required: false,
+  })
+  @IsOptional()
+  @IsNumber()
+  userId?: number;
 }

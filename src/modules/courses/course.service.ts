@@ -5,10 +5,14 @@ import {
   UpdateCourseDto,
   CourseFilterDto,
 } from './dto/course.dto';
+import { UserContextService } from '../../common/context/user-context.service';
 
 @Injectable()
 export class CourseService {
-  constructor(private readonly repo: CourseRepository) {}
+  constructor(
+      private readonly repo: CourseRepository,
+      private readonly userContextService: UserContextService,
+      ) {}
 
   async create(dto: CreateCourseDto) {
     const exists = await this.repo.findByCode(dto.code);
@@ -22,10 +26,12 @@ export class CourseService {
   }
 
   async findPage(dto: CourseFilterDto) {
+    const userId = dto.userId ?? this.userContextService.getUserId();
     return this.repo.findPageWithFilter({
       keyword: dto.keyword,
       level: dto.level,
       isActive: dto.isActive,
+      userId,
       page: dto.page,
       size: dto.size,
     });

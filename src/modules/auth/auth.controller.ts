@@ -137,7 +137,8 @@ export class AuthController {
     @Body('accessToken') googleAccessToken: string,
     @Req() req: Request,
   ) {
-    const profile = await this.authService.getGoogleProfileFromToken(googleAccessToken);
+    const profile =
+      await this.authService.getGoogleProfileFromToken(googleAccessToken);
     const tokens = await this.authService.loginWithGoogle(profile, req.ip);
     return ApiResponse.ok(tokens, 'Đăng nhập Google thành công');
   }

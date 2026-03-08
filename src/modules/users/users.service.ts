@@ -1,7 +1,4 @@
-import {
-  Injectable,
-  ConflictException,
-} from '@nestjs/common';
+import { Injectable, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
@@ -128,6 +125,15 @@ export class UsersService {
         }),
         ...(dto.age !== undefined && { age: dto.age }),
         ...(dto.job !== undefined && { job: dto.job }),
+        ...(dto.userDescription !== undefined && {
+          userDescription: dto.userDescription,
+        }),
+        ...(dto.levelAssessment !== undefined && {
+          levelAssessment: dto.levelAssessment,
+        }),
+        ...(dto.historySummary !== undefined && {
+          historySummary: dto.historySummary,
+        }),
       });
     } else {
       // Tạo profile nếu chưa có
@@ -142,6 +148,9 @@ export class UsersService {
           age: dto.age,
           job: dto.job,
           avatarUrl: dto.avatarUrl,
+          userDescription: dto.userDescription,
+          levelAssessment: dto.levelAssessment,
+          historySummary: dto.historySummary,
           user,
         }),
       );

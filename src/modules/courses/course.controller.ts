@@ -25,6 +25,10 @@ import {
 import { Roles } from '../../common/decorators/auth.decorator';
 import { ApiResponse } from '../../common/dto/api-response.dto';
 import { CoreConstant } from '../../common/constants/core.constant';
+import {
+  CurrentUser,
+  JwtPayload,
+} from '../../common/decorators/current-user.decorator';
 
 @ApiTags('Courses - Khóa học')
 @ApiBearerAuth('JWT-auth')
@@ -49,7 +53,11 @@ export class CourseController {
   @Roles(CoreConstant.Admin, CoreConstant.User)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Danh sách khóa học (phân trang, lọc)' })
-  async findPage(@Body() dto: CourseFilterDto) {
+  async findPage(
+    @Body() dto: CourseFilterDto,
+    @CurrentUser() user: JwtPayload,
+  ) {
+    dto.userId = user?.userId;
     return ApiResponse.ok(await this.service.findPage(dto));
   }
 
@@ -59,9 +67,14 @@ export class CourseController {
   @Get('active')
   @Roles(CoreConstant.Admin, CoreConstant.User)
   @ApiOperation({ summary: 'Lấy danh sách khóa học đang hoạt động (public)' })
-  async findActive() {
+  async findActive(@CurrentUser() user: JwtPayload) {
     return ApiResponse.ok(
-      await this.service.findPage({ isActive: true, page: 1, size: 100 }),
+      await this.service.findPage({
+        isActive: true,
+        userId: user?.userId,
+        page: 1,
+        size: 100,
+      }),
     );
   }
 

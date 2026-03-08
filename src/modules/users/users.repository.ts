@@ -23,7 +23,7 @@ export class UsersRepository extends BaseRepository<User> {
     const qb = this.qb('u')
       .leftJoinAndSelect('u.roles', 'r')
       .leftJoinAndSelect('u.profile', 'p')
-      .where('u.is_deleted = :del', { del: false });
+      .where('u.isDeleted = :del', { del: false });
 
     if (opts.keyword) {
       qb.andWhere('(u.username LIKE :kw OR p.email LIKE :kw)', {

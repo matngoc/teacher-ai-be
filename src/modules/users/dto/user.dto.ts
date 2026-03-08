@@ -12,8 +12,6 @@ import {
 } from 'class-validator';
 import { UserStatus } from '../../../entities/auth/user.entity';
 
-// ...existing code...
-
 export class UpdateProfileDto {
   @ApiProperty({ required: false, example: 'Nguyễn' })
   @IsOptional()
@@ -69,6 +67,24 @@ export class UpdateProfileDto {
   @IsOptional()
   @IsString()
   avatarUrl?: string;
+
+  @ApiProperty({
+    required: false,
+    description: 'Mô tả về người dùng',
+  })
+  @IsOptional()
+  @IsString()
+  userDescription?: string;
+
+  @ApiProperty({ required: false, description: 'Đánh giá trình độ tiếng Anh' })
+  @IsOptional()
+  @IsString()
+  levelAssessment?: string;
+
+  @ApiProperty({ required: false, description: 'Tóm tắt lịch sử học tập' })
+  @IsOptional()
+  @IsString()
+  historySummary?: string;
 }
 
 export class CreateUserDto {

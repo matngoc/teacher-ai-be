@@ -33,5 +33,4 @@ export class Role extends AuditEntity {
     inverseJoinColumn: { name: 'permission_id', referencedColumnName: 'id' },
   })
   permissions: Permission[];
-
 }

@@ -10,7 +10,11 @@ import { RolesModule } from './modules/roles/roles.module';
 import { StorageModule } from './modules/storage/storage.module';
 import { DictionaryModule } from './modules/dictionary/dictionary.module';
 import { CourseModule } from './modules/courses/course.module';
+import { LessonModule } from './modules/lessons/lesson.module';
+import { LessonHistoryModule } from './modules/lesson-histories/lesson-history.module';
 import { Course } from './entities/course.entity';
+import { Lesson } from './entities/lesson.entity';
+import { LessonHistory } from './entities/lesson-history.entity';
 import { User } from './entities/auth/user.entity';
 import { Role } from './entities/auth/role.entity';
 import { Permission } from './entities/auth/permission.entity';
@@ -43,6 +47,8 @@ import { FileUpload } from './entities/file-upload.entity';
           Dictionary,
           FileUpload,
           Course,
+          Lesson,
+          LessonHistory,
         ],
         synchronize: cfg.get('NODE_ENV') !== 'production',
         autoLoadEntities: true,
@@ -57,6 +63,8 @@ import { FileUpload } from './entities/file-upload.entity';
     StorageModule,
     DictionaryModule,
     CourseModule,
+    LessonModule,
+    LessonHistoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

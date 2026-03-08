@@ -39,6 +39,15 @@ export class UserProfile {
   @Column({ name: 'avatar_url', nullable: true })
   avatarUrl: string;
 
+  @Column({ name: 'user_description', nullable: true, type: 'longtext' })
+  userDescription: string;
+
+  @Column({ name: 'level_assessment', nullable: true, type: 'longtext' })
+  levelAssessment: string;
+
+  @Column({ name: 'history_summary', nullable: true, type: 'longtext' })
+  historySummary: string;
+
   @OneToOne(() => User, (user) => user.profile)
   @JoinColumn({ name: 'user_id' })
   user: User;
