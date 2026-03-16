@@ -82,6 +82,12 @@ export class TokenResponseDto {
   @ApiProperty()
   tokenType: string = 'Bearer';
 
+  @ApiProperty({
+    description: 'True nếu đây là lần đăng nhập đầu tiên của tài khoản',
+    example: true,
+  })
+  isFirstLogin: boolean;
+
   @ApiProperty()
   user: User;
 }

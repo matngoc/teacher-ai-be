@@ -15,6 +15,7 @@ import { Role } from '../../entities/auth/role.entity';
 import { Permission } from '../../entities/auth/permission.entity';
 import { RefreshToken } from '../../entities/auth/refresh-token.entity';
 import { UserProfile } from '../../entities/auth/user-profile.entity';
+import { UserSession } from '../../entities/auth/user-session.entity';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { UserProfile } from '../../entities/auth/user-profile.entity';
       Role,
       Permission,
       RefreshToken,
+      UserSession,
       UserProfile,
     ]),
     JwtModule.register({ global: true }),

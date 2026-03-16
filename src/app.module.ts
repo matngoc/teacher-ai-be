@@ -12,6 +12,7 @@ import { DictionaryModule } from './modules/dictionary/dictionary.module';
 import { CourseModule } from './modules/courses/course.module';
 import { LessonModule } from './modules/lessons/lesson.module';
 import { LessonHistoryModule } from './modules/lesson-histories/lesson-history.module';
+import { ReportsModule } from './modules/reports/reports.module';
 import { Course } from './entities/course.entity';
 import { Lesson } from './entities/lesson.entity';
 import { LessonHistory } from './entities/lesson-history.entity';
@@ -65,6 +66,7 @@ import { FileUpload } from './entities/file-upload.entity';
     CourseModule,
     LessonModule,
     LessonHistoryModule,
+    ReportsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -46,6 +46,9 @@ export class User extends AuditEntity {
   @Column({ name: 'last_login_at', type: 'timestamp', nullable: true })
   lastLoginAt: Date;
 
+  @Column({ name: 'is_first_login', default: true })
+  isFirstLogin: boolean;
+
   @Column({
     name: 'last_password_change_at',
     type: 'timestamp',

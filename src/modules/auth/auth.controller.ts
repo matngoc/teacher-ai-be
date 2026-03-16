@@ -92,6 +92,17 @@ export class AuthController {
     return ApiResponse.ok(null, 'Đổi mật khẩu thành công');
   }
 
+  @ApiBearerAuth('JWT-auth')
+  @Patch('first-login/complete')
+  @ApiOperation({
+    summary:
+      'Đánh dấu hoàn tất đăng nhập lần đầu (dùng sau khi user hoàn tất onboarding/profile)',
+  })
+  async completeFirstLogin(@CurrentUser() user: JwtPayload) {
+    await this.authService.completeFirstLogin(user.userId);
+    return ApiResponse.ok(null, 'Đã cập nhật trạng thái đăng nhập lần đầu');
+  }
+
   // ─── GOOGLE SSO ───────────────────────────────────────────────────────────
 
   @Public()
@@ -117,11 +128,13 @@ export class AuthController {
     @Res() res: Response,
   ) {
     const tokens = await this.authService.loginWithGoogle(req.user, req.ip);
-    const clientRedirectUrl = process.env.GOOGLE_REDIRECT_CLIENT_URL ?? 'http://localhost:3000';
+    const clientRedirectUrl =
+      process.env.GOOGLE_REDIRECT_CLIENT_URL ?? 'http://localhost:5173';
     const redirectUrl = new URL(clientRedirectUrl);
     redirectUrl.searchParams.set('accessToken', tokens.accessToken);
     redirectUrl.searchParams.set('refreshToken', tokens.refreshToken);
     redirectUrl.searchParams.set('expiresIn', String(tokens.expiresIn));
+    redirectUrl.searchParams.set('isFirstLogin', String(tokens.isFirstLogin));
     res.redirect(redirectUrl.toString());
   }
 

@@ -22,6 +22,7 @@ import {
 } from './dto/auth.dto';
 import { CoreConstant } from '../../common/constants/core.constant';
 import { GoogleProfile } from './strategies/google.strategy';
+import { UserSession } from '../../entities/auth/user-session.entity';
 
 @Injectable()
 export class AuthService {
@@ -40,6 +41,8 @@ export class AuthService {
     private readonly roleRepo: Repository<Role>,
     @InjectRepository(RefreshToken)
     private readonly refreshTokenRepo: Repository<RefreshToken>,
+    @InjectRepository(UserSession)
+    private readonly sessionRepo: Repository<UserSession>,
     @InjectRepository(UserProfile)
     private readonly profileRepo: Repository<UserProfile>,
     private readonly jwtService: JwtService,
@@ -104,7 +107,8 @@ export class AuthService {
       throw new UnauthorizedException('Mật khẩu không đúng');
     }
 
-    // Reset failed attempts
+    // Reset failed attempts and update login timestamp.
+    // isFirstLogin is completed by a dedicated API after onboarding.
     await this.userRepo.update(user.id, {
       failedLoginAttempts: 0,
       lastLoginAt: new Date(),
@@ -126,6 +130,11 @@ export class AuthService {
         ipAddress: ip,
       }),
     );
+
+    await this.createSessionRecord(user, {
+      ip,
+      deviceName: dto.deviceInfo,
+    });
 
     return tokens;
   }
@@ -266,6 +275,7 @@ export class AuthService {
       roles: user.roles,
       permissions: this.extractPermissions(user.roles),
       lastLoginAt: user.lastLoginAt,
+      isFirstLogin: user.isFirstLogin,
     };
   }
 
@@ -338,7 +348,9 @@ export class AuthService {
     if (user.status === UserStatus.LOCKED)
       throw new UnauthorizedException('Tài khoản đã bị khóa');
 
-    await this.userRepo.update(user.id, { lastLoginAt: new Date() });
+    await this.userRepo.update(user.id, {
+      lastLoginAt: new Date(),
+    });
 
     const tokens = await this.generateTokens(user);
 
@@ -355,6 +367,12 @@ export class AuthService {
         ipAddress: ip,
       }),
     );
+
+    await this.createSessionRecord(user, {
+      ip,
+      deviceName: 'Google OAuth',
+      userAgent: 'Google OAuth',
+    });
 
     return tokens;
   }
@@ -381,6 +399,15 @@ export class AuthService {
       avatar: data.picture ?? '',
       accessToken,
     };
+  }
+
+  async completeFirstLogin(userId: number): Promise<void> {
+    const user = await this.userRepo.findOne({ where: { id: userId } });
+    if (!user) throw new NotFoundException('Người dùng không tồn tại');
+
+    if (!user.isFirstLogin) return;
+
+    await this.userRepo.update(userId, { isFirstLogin: false });
   }
 
   // ─── PRIVATE ──────────────────────────────────────────────────────────────
@@ -436,6 +463,29 @@ export class AuthService {
       refreshToken,
       expiresIn: this.ACCESS_EXPIRES_IN,
       tokenType: 'Bearer',
+      isFirstLogin: user.isFirstLogin ?? false,
     };
+  }
+
+  private async createSessionRecord(
+    user: User,
+    opts?: {
+      ip?: string;
+      deviceId?: string;
+      deviceName?: string;
+      userAgent?: string;
+    },
+  ): Promise<void> {
+    await this.sessionRepo.save(
+      this.sessionRepo.create({
+        user,
+        ipAddress: opts?.ip,
+        deviceId: opts?.deviceId,
+        deviceName: opts?.deviceName,
+        userAgent: opts?.userAgent,
+        isActive: true,
+        lastActivityAt: new Date(),
+      }),
+    );
   }
 }
