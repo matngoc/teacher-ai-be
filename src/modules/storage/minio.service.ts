@@ -20,24 +20,73 @@ export class MinioService implements OnModuleInit {
   readonly bucketName: string;
   private readonly publicBaseUrl: string;
 
+  private parseEndpoint(): {
+    endPoint: string;
+    port: number;
+    useSSL: boolean;
+  } {
+    const endpointUrlRaw = this.config.get<string>('MINIO_ENDPOINT_URL');
+    const endpointRaw = this.config.get<string>('MINIO_ENDPOINT', 'localhost');
+    const portRaw = this.config.get<string>('MINIO_PORT', '9000');
+    const useSSLRaw = this.config.get<string>('MINIO_USE_SSL', 'false');
+
+    // Support both styles: MINIO_ENDPOINT_URL=minio:9000 or http(s)://host:port.
+    if (endpointUrlRaw) {
+      const withProtocol = /^https?:\/\//i.test(endpointUrlRaw)
+        ? endpointUrlRaw
+        : `http://${endpointUrlRaw}`;
+      const parsed = new URL(withProtocol);
+      return {
+        endPoint: parsed.hostname,
+        port: parsed.port
+          ? Number(parsed.port)
+          : parsed.protocol === 'https:'
+            ? 443
+            : 80,
+        useSSL: parsed.protocol === 'https:',
+      };
+    }
+
+    return {
+      endPoint: endpointRaw,
+      port: Number(portRaw),
+      useSSL: useSSLRaw === 'true',
+    };
+  }
+
+  private async wait(ms: number): Promise<void> {
+    await new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
   constructor(private readonly config: ConfigService) {
-    const endpoint = this.config.get<string>('MINIO_ENDPOINT', 'localhost');
-    const port = parseInt(this.config.get<string>('MINIO_PORT', '9000'));
-    const useSSL = this.config.get<string>('MINIO_USE_SSL', 'false') === 'true';
+    const { endPoint, port, useSSL } = this.parseEndpoint();
+    const accessKey =
+      this.config.get<string>('MINIO_ACCESS_KEY') ??
+      this.config.get<string>('MINIO_ROOT_USER', 'minioadmin');
+    const secretKey =
+      this.config.get<string>('MINIO_SECRET_KEY') ??
+      this.config.get<string>('MINIO_ROOT_PASSWORD', 'minioadmin');
 
     this.bucketName = this.config.get<string>('MINIO_BUCKET', 'uploads');
     this.publicBaseUrl = this.config.get<string>(
       'MINIO_PUBLIC_URL',
-      `http://${endpoint}:${port}`,
+      this.config.get<string>(
+        'MINIO_SERVER_URL',
+        `${useSSL ? 'https' : 'http'}://${endPoint}:${port}`,
+      ),
     );
 
     this.client = new Client({
-      endPoint: endpoint,
+      endPoint,
       port,
       useSSL,
-      accessKey: this.config.get<string>('MINIO_ACCESS_KEY', 'minioadmin'),
-      secretKey: this.config.get<string>('MINIO_SECRET_KEY', 'minioadmin'),
+      accessKey,
+      secretKey,
     });
+
+    this.logger.log(
+      `MinIO config loaded - endpoint=${endPoint}:${port}, ssl=${useSSL}, bucket=${this.bucketName}`,
+    );
   }
 
   async onModuleInit() {
@@ -45,15 +94,31 @@ export class MinioService implements OnModuleInit {
   }
 
   private async ensureBucket(bucket: string): Promise<void> {
-    try {
-      const exists = await this.client.bucketExists(bucket);
-      if (!exists) {
-        await this.client.makeBucket(bucket, 'us-east-1');
-        this.logger.log(`Bucket '${bucket}' đã được tạo`);
+    const retries = 10;
+    const retryDelayMs = 3000;
+
+    for (let attempt = 1; attempt <= retries; attempt++) {
+      try {
+        const exists = await this.client.bucketExists(bucket);
+        if (!exists) {
+          await this.client.makeBucket(bucket, 'us-east-1');
+          this.logger.log(`Bucket '${bucket}' đã được tạo`);
+        }
+        return;
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : String(err);
+        if (attempt === retries) {
+          this.logger.error(
+            `Lỗi khởi tạo bucket '${bucket}' sau ${retries} lần thử: ${msg}`,
+          );
+          return;
+        }
+
+        this.logger.warn(
+          `Không thể kết nối MinIO (lần ${attempt}/${retries}), thử lại sau ${retryDelayMs}ms: ${msg}`,
+        );
+        await this.wait(retryDelayMs);
       }
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : String(err);
-      this.logger.error(`Lỗi khởi tạo bucket '${bucket}': ${msg}`);
     }
   }
 

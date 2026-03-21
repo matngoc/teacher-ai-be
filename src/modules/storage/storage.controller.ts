@@ -13,7 +13,6 @@ import {
 } from '@nestjs/common';
 import {
   ApiTags,
-  ApiBearerAuth,
   ApiOperation,
   ApiConsumes,
   ApiBody,
@@ -21,9 +20,10 @@ import {
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { StorageService } from './storage.service';
 import { ApiResponse } from '../../common/dto/api-response.dto';
+import { Public } from '../../common/decorators/auth.decorator';
 
 @ApiTags('Storage')
-@ApiBearerAuth('JWT-auth')
+@Public()
 @Controller('storage')
 export class StorageController {
   constructor(private readonly storageService: StorageService) {}
